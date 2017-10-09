@@ -1,5 +1,6 @@
 import gzip
-
+from PIL import Image
+import numpy as np
 ############## EXERCISE 1 ##############
 
 #Method to read the label files
@@ -65,3 +66,11 @@ def read_images(filename):
 #Getting the image files from the data folder
 train_images = read_images('data/train-images-idx3-ubyte.gz')
 test_images = read_images('data/t10k-images-idx3-ubyte.gz')
+
+
+############## EXERCISE 2 ##############
+
+for rows in train_images[2]:
+    for cols in rows:
+        print('. ' if cols<= 127 else '# ', end = '')
+    print()
