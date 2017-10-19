@@ -1,6 +1,8 @@
 import gzip
-from PIL import Image
 import numpy as np
+import PIL.Image as pil
+import os, errno
+
 ############## EXERCISE 1 ##############
 
 #Method to read the label files
@@ -53,7 +55,7 @@ def read_images(filename):
         images = []
 
         #Looping through the amount of rows and columns and adding them to the images array
-        for i in range(numImg):
+        for i in range(20): # changed from numImg for testing purposes
             rows = []
             for r in range(numRow):
                 cols = []
@@ -70,7 +72,23 @@ test_images = read_images('data/t10k-images-idx3-ubyte.gz')
 
 ############## EXERCISE 2 ##############
 
+#Looping through the amount of rows in the train images set and extracting the third element
 for rows in train_images[2]:
+    #For the amount of columns in the row print different symbols depeneding on the value
     for cols in rows:
-        print('. ' if cols<= 127 else '# ', end = '')
+        print('. ' if cols < 12 else '# ', end = '')
+    #Move to the next line to show each row on seperate lines on the console
     print()
+
+############## EXERCISE 3 ##############
+''' What was done in class
+img = pil.fromarray(np.array(train_images[5]))
+img = img.convert('RGB')
+img.save('2.png') '''
+
+# Making dir adapted from https://stackoverflow.com/questions/1274405/how-to-create-new-folder
+path = "PNG/"
+dir = os.path.dirname(path)
+
+if not os.path.exists(dir):
+    os.makedirs(dir)
