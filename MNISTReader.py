@@ -2,6 +2,7 @@ import gzip
 import numpy as np
 import PIL.Image as pil
 import os, errno
+import shutil
 
 ############## EXERCISE 1 ##############
 
@@ -55,7 +56,7 @@ def read_images(filename):
         images = []
 
         #Looping through the amount of rows and columns and adding them to the images array
-        for i in range(20): # changed from numImg for testing purposes
+        for i in range(20): #numImg
             rows = []
             for r in range(numRow):
                 cols = []
@@ -73,10 +74,10 @@ test_images = read_images('data/t10k-images-idx3-ubyte.gz')
 ############## EXERCISE 2 ##############
 
 #Looping through the amount of rows in the train images set and extracting the third element
-for rows in train_images[0]:
+for rows in train_images[2]:
     #For the amount of columns in the row print different symbols depeneding on the value
     for cols in rows:
-        print('. ' if cols < 12 else '# ', end = '')
+        print('. ' if cols < 127 else '# ', end = '')
     #Move to the next line to show each row on seperate lines on the console
     print()
 
@@ -90,16 +91,37 @@ img.save('2.png') '''
 path = "PNG/"
 dir = os.path.dirname(path)
 
+# If the directory does not exist, make the directory
 if not os.path.exists(dir):
     os.makedirs(dir)
 
-def save_as_png(imgToSave, label):
+def save_as_png(imgToSave, label, folder):
+
+    saveTo = 'PNG/' + folder + '/'
+    # Making the sub folder to seperate train and test images files
+    dir = os.path.dirname(saveTo)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
     for i, image in enumerate(imgToSave):
-        name = 'PNG/' + str(i) + '.png'
-        img = pil.fromarray(np.array(train_images[i]))
-        img = img.convert('RGB')
-        img.save(name, 'PNG')
+        # Getting the label num for each byte for the name
+        labelNo = label[i]
+        # Setting the name for the png'
+        name = folder + '-' + str(i).zfill(5) + '-' + str(labelNo) + '.png'
+        saveFold = saveTo + name
 
-save_as_png(train_images, train_labels)
-#save_as_png(test_images, test_labels)
+        # Converting the numpy array into png files
+        img = pil.fromarray(np.array(image).astype('uint8'))
+        img = img.convert('RGB')
+        img.save(saveFold, 'PNG')
+    # Printing that the PNG files have been saved into whichever folder
+    print('Saved as PNG files to the', folder,'folder')
+
+# Calling the method and passing each image set and label set in for converting and saving with the name of the data set
+save_as_png(train_images, train_labels, 'train')
+save_as_png(test_images, test_labels, 'test')
+
+# Zipping the PNG directory
+# Adapted from https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
+print("Zipping the PNG folder, this will take a while....")
+shutil.make_archive(dir, 'zip', dir)
