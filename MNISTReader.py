@@ -73,7 +73,7 @@ test_images = read_images('data/t10k-images-idx3-ubyte.gz')
 ############## EXERCISE 2 ##############
 
 #Looping through the amount of rows in the train images set and extracting the third element
-for rows in train_images[2]:
+for rows in train_images[0]:
     #For the amount of columns in the row print different symbols depeneding on the value
     for cols in rows:
         print('. ' if cols < 12 else '# ', end = '')
@@ -92,3 +92,14 @@ dir = os.path.dirname(path)
 
 if not os.path.exists(dir):
     os.makedirs(dir)
+
+def save_as_png(imgToSave, label):
+
+    for i, image in enumerate(imgToSave):
+        name = 'PNG/' + str(i) + '.png'
+        img = pil.fromarray(np.array(train_images[i]))
+        img = img.convert('RGB')
+        img.save(name, 'PNG')
+
+save_as_png(train_images, train_labels)
+#save_as_png(test_images, test_labels)
